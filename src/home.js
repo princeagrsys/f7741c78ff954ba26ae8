@@ -2,6 +2,7 @@ import * as React from 'react';
 import { View, Text, Dimensions, TextInput, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import rightArrow from "./imgs/right-arrow.png";
 const deviceWidth = Dimensions.get("window").width;
+import Loader from "./Loader";
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -10,7 +11,8 @@ class HomeScreen extends React.Component {
 
   state = {
     searchItem: "",
-    countries: []
+    countries: [],
+    loading: false
   };
 
   componentDidMount = () => {
@@ -19,11 +21,13 @@ class HomeScreen extends React.Component {
 
   search = async () => {
     try {
+      this.setState({ loading: true });
       const res = await fetch("https://restcountries.eu/rest/v2/name/" + this.state.searchItem);
       const countries = await res.json();
-      this.setState({ countries });
+      this.setState({ countries, loading: false });
       console.log("result fetched:===" + JSON.stringify(this.state.countries))
     } catch (error) {
+      this.setState({ loading: false });
       console.log("error found+_++" + JSON.stringify(error));
     }
   }
@@ -69,9 +73,10 @@ class HomeScreen extends React.Component {
   }
 
   render() {
-    let { searchItem, countries } = this.state;
+    let { searchItem, countries, loading } = this.state;
     return (
       <View style={{ flex: 1, alignItems: 'center', padding: 10 }}>
+        <Loader loading={loading} />
         <View style={styles.inputBox}>
           <TextInput
             style={styles.input}
