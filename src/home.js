@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { View, Text, Dimensions, TextInput, Image, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import rightArrow from "./imgs/right-arrow.png";
+const deviceWidth = Dimensions.get("window").width;
 
 class HomeScreen extends React.Component {
   static navigationOptions = {
@@ -29,23 +30,19 @@ class HomeScreen extends React.Component {
 
   renderCountry = (item) => {
     return (
-      <TouchableOpacity style={{
-        width: "100%",
-        justifyContent: "flex-start",
-        flexDirection: "row"
-      }}
+      <TouchableOpacity style={styles.country}
         onPress={() => {
-          // this._onPress(item)
           this.props.navigation.navigate("Weather", { capital: item.capital });
+          this.setState({ searchItem: "", countries: [] })
         }}>
         <View style={{ width: "25%", height: 70, padding: 10 }}>
           <Image source={{ uri: item.flag }} style={{ width: "100%", height: "100%", resizeMode: "contain" }}></Image>
         </View>
         <View style={{ width: "60%", backgroundColor: 'white' }}>
           <Text style={{ fontSize: 14, color: "black" }}>{item.name}</Text>
-          <Text style={{ fontSize: 12, color: "black" }}>Capital:- {item.capital}</Text>
-          <Text style={{ fontSize: 12, color: "black" }}>Population:- {item.population} </Text>
-          <Text style={{ fontSize: 12, color: "black" }}>Latlong info:- {JSON.stringify(item.latlng)} </Text>
+          <Text style={styles.text}>Capital:- {item.capital}</Text>
+          <Text style={styles.text}>Population:- {item.population} </Text>
+          <Text style={styles.text}>Latlong info:- {JSON.stringify(item.latlng)} </Text>
         </View>
         <View style={{ width: "15%", height: 70, padding: 10 }}>
           <Image source={rightArrow} style={{ width: 25, height: "100%", resizeMode: "contain" }}></Image>
@@ -57,7 +54,7 @@ class HomeScreen extends React.Component {
   renderSeperator = (item) => {
     return (
       <View
-        style={{ width: Dimensions.get("window").width, height: 1, backgroundColor: "grey" }}
+        style={{ width: deviceWidth, height: 1, backgroundColor: "grey" }}
       />
     )
   }
@@ -65,12 +62,7 @@ class HomeScreen extends React.Component {
   renderEmptypage = (item) => {
     let { searchItem } = this.state;
     return (
-      <View
-        style={{
-          width: Dimensions.get("window").width, height: "100%",
-          justifyContent: "center", alignItems: "center"
-        }}
-      >
+      <View style={styles.emptyPage}>
         <Text style={{ fontSize: 14, color: "black" }}>{searchItem ? "No data found" : "Search your country"}</Text>
       </View>
     )
@@ -110,6 +102,16 @@ class HomeScreen extends React.Component {
 export default HomeScreen;
 
 const styles = StyleSheet.create({
+  emptyPage: {
+    width: Dimensions.get("window").width, height: "100%",
+    justifyContent: "center", alignItems: "center"
+  },
+  country: {
+    width: "100%",
+    justifyContent: "flex-start",
+    flexDirection: "row"
+  },
+  text: { fontSize: 12, color: "black" },
   inputBox: {
     width: "100%", height: 50,
     flexDirection: "row",
